@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 China-Thailand Joint Lab Conference Handbook</title>
+    <!-- React Core -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Smooth Scroll & Animations */
+        html { scroll-behavior: smooth; }
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #1e40af, #3b82f6);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons (Inline SVG Components) ---
+        const IconWrapper = ({ children, size = 20, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Icons = {
+            Calendar: (p) => <IconWrapper {...p}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></IconWrapper>,
+            MapPin: (p) => <IconWrapper {...p}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></IconWrapper>,
+            Users: (p) => <IconWrapper {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></IconWrapper>,
+            Clock: (p) => <IconWrapper {...p}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></IconWrapper>,
+            Coffee: (p) => <IconWrapper {...p}><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></IconWrapper>,
+            Book: (p) => <IconWrapper {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></IconWrapper>,
+            Sun: (p) => <IconWrapper {...p}><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></IconWrapper>,
+            Thermometer: (p) => <IconWrapper {...p}><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></IconWrapper>,
+            User: (p) => <IconWrapper {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></IconWrapper>,
+            Briefcase: (p) => <IconWrapper {...p}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></IconWrapper>,
+            ChevronRight: (p) => <IconWrapper {...p}><polyline points="9 18 15 12 9 6"></polyline></IconWrapper>
+        };
+
+        // --- Data ---
+        const universityProfile = `Guizhou Education University (GZEU), located in Wudang District, Guiyang City, Guizhou Province, is a provincial full-time regular undergraduate university. The university is formerly known as Guizhou Institute of Education, which was founded in 1978. In 2009, it was transformed into a full-time regular undergraduate university. In 2012, it was entitled to confer Bachelor's Degrees. In 2015, it passed the Undergraduate Teaching Qualification Assessment by the Ministry of Education. In 2017, it was approved as a project construction unit for the provincial "Double First-Class" initiative. In 2023, it successfully completed the Undergraduate Education and Teaching Audit Assessment as Guizhou's first pilot institution for ministry-province collaboration. In 2024, it was authorized to confer Master's Degrees.`;
+
+        const scheduleData = [
+            {
+                date: "Nov. 25 (Tuesday)",
+                location: "Arrival in Guiyang",
+                events: [
+                    { time: "13:35 - 17:00", title: "Arrival in Guiyang", type: "travel" },
+                    { time: "17:00 - 18:00", title: "Check-in", desc: "GZEU Comprehensive Building", type: "logistics" },
+                    { time: "18:30 - 19:30", title: "Dinner", desc: "Comprehensive Building, 2nd Floor", type: "food" }
+                ]
+            },
+            {
+                date: "Nov. 26 (Wednesday)",
+                location: "Guizhou Education University (Yinshan Academy)",
+                events: [
+                    { time: "08:00 - 08:45", title: "Breakfast", desc: "Hotel 2nd Floor", type: "food" },
+                    { time: "09:00 - 10:00", title: "Opening Ceremony", desc: "Host introduces guests; Addresses by Leaders; Lab Progress Report by Prof. Luo Guangjie", type: "keynote" },
+                    { time: "10:00 - 10:30", title: "Group Photo & Tea Break", desc: "Steps at Yinshan Academy Entrance", type: "break" },
+                    { time: "10:30 - 12:00", title: "Academic Session I", desc: "Presentations by Asst. Prof. Dr. Yutthaphong, Prof. Li Shuang, Asst. Prof. Dr. Venus", type: "academic" },
+                    { time: "12:00 - 14:15", title: "Lunch & Rest", desc: "Comprehensive Building, 2nd Floor", type: "food" },
+                    { time: "14:30 - 15:30", title: "Campus Tour", desc: "History Museum & Bio-Labs", type: "activity" },
+                    { time: "15:40 - 18:00", title: "Academic Session II", desc: "Presentations by Asst. Prof. Dr. Patchares, Prof. Chen Qiwei, Dr. Kanokporn, Dr. Wu Yangyang, Prof. Zhang Yunlin, Asst. Prof. Dr. Laddawan", type: "academic" },
+                    { time: "18:15", title: "Dinner", desc: "Lao Kai Li Sour Soup Fish (Departure to venue)", type: "food" }
+                ]
+            },
+            {
+                date: "Nov. 27 (Thursday)",
+                location: "Gui'an New District & Puding County",
+                events: [
+                    { time: "08:00 - 11:30", title: "Technical Visit", desc: "Lab Data Center (Gui'an New District)", type: "activity" },
+                    { time: "11:30 - 12:15", title: "Lunch", desc: "Light Meal (En route)", type: "food" },
+                    { time: "14:00 - 16:00", title: "Field Trip", desc: "Karst Ecological Monitoring (Puding County)", type: "activity" },
+                    { time: "18:00 - 20:00", title: "Dinner & Discussion", desc: "Yinshan Academy (Topic: 2026 Co-construction & 15th Five-Year Plan)", type: "food" }
+                ]
+            },
+            {
+                date: "Nov. 28 (Friday)",
+                location: "Guiyang City",
+                events: [
+                    { time: "05:00", title: "Departure", desc: "Transfer to Guiyang Longdongbao Airport (T3)", type: "travel" }
+                ]
+            }
+        ];
+
+        const presentations = [
+            { time: "10:30", end: "11:00", speaker: "Asst. Prof. Dr. Yutthaphong Kheereemangkla", topic: "Analyzing the impacts of soil and water conservation practices and increasing forestlands measures on hydrological responses in northwest mountainous watersheds, Thailand" },
+            { time: "11:00", end: "11:30", speaker: "Prof. Li Shuang", topic: "InSAR Monitoring of Large-Scale Earth Surface Deformation with Time Series Analysis" },
+            { time: "11:30", end: "12:00", speaker: "Asst. Prof. Dr. Venus Tuankrua", topic: "Ecological Economic Value of Soil Water Storage Services at Forest Restoration in Various Patterns: Head Watershed Area, Nan Province, Thailand" },
+            { time: "15:40", end: "16:00", speaker: "Asst. Prof. Dr. Patchares Chacuttrikul", topic: "Influence of land use types on soil properties at Trat Agroforestry, Trat Province" },
+            { time: "16:00", end: "16:20", speaker: "Prof. Chen Qiwei", topic: "China's Rural Poverty Alleviation Policies and Rural Sustainable Development" },
+            { time: "16:20", end: "16:40", speaker: "Dr. Kanokporn Kaewsong", topic: "Habitat differentiation and trait variation in coastal plant communities" },
+            { time: "16:40", end: "17:00", speaker: "Dr. Wu Yangyang (Online)", topic: "Observational Modeling and Sustainable Management of Watershed Critical Zone Eco-processes" },
+            { time: "17:00", end: "17:20", speaker: "Prof. Zhang Yunlin", topic: "Drivers of forest fires under fire management policies: A comparison of machine learning models based on multi-temporal MODIS fire data" },
+            { time: "17:20", end: "17:40", speaker: "Asst. Prof. Dr. Laddawan Rianthakool", topic: "Exploring the Possibility of Using Terrestrial Laser Scanning (TLS) in Tropical Rainforests" }
+        ];
+
+        const staffList = [
+            { name: "Luo Xuqiang", role: "Overall Lead", title: "Dean, School of Geography and Resources", contact: "18984011865" },
+            { name: "Wu Yaping", role: "General Coordinator", title: "Director, Guizhou Mountain Research Institute", contact: "13984103361" },
+            { name: "Ren Cuijuan", role: "General Coordinator", title: "Dean, School of Life Sciences", contact: "18508500627" },
+            { name: "Li Shuang", role: "Academic Liaison & Interpreter", title: "Prof., Guizhou Mountain Research Institute", contact: "18586841175" },
+            { name: "Fan Ruixue", role: "Coordination & Implementation", title: "Assoc. Prof., School of Geography", contact: "13756272294" },
+            { name: "Wang Qian", role: "Coordination & Implementation", title: "Assoc. Prof., School of Geography", contact: "18984899875" },
+            { name: "Zheng Tianyuhang", role: "Volunteer Team Leader", title: "Student, School of Foreign Languages", contact: "15003408122" },
+        ];
+
+        const guests = [
+            { name: "Asst. Prof. Dr. Yutthaphong Kheereemangkla", gender: "Male" },
+            { name: "Asst. Prof. Dr. Venus Tuankrua", gender: "Female" },
+            { name: "Asst. Prof. Dr. Patchares Chacuttrikul", gender: "Female" },
+            { name: "Dr. Kanokporn Kaewsong", gender: "Female" },
+            { name: "Dr. Pornchai Kladwong", gender: "Male" },
+            { name: "Asst. Prof. Dr. Laddawan Rianthakool", gender: "Female" },
+        ];
+
+        // --- Helper Components ---
+
+        const Badge = ({ type }) => {
+            const styles = {
+                travel: "bg-slate-100 text-slate-600 border-slate-200",
+                logistics: "bg-violet-50 text-violet-700 border-violet-100",
+                food: "bg-amber-50 text-amber-700 border-amber-100",
+                academic: "bg-blue-50 text-blue-700 border-blue-100",
+                keynote: "bg-rose-50 text-rose-700 border-rose-100",
+                activity: "bg-emerald-50 text-emerald-700 border-emerald-100",
+                break: "bg-orange-50 text-orange-700 border-orange-100"
+            };
+            return (
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${styles[type] || styles.travel}`}>
+                    {type}
+                </span>
+            );
+        };
+
+        const SectionTitle = ({ children, icon: Icon }) => (
+            <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-600/20">
+                    <Icon className="text-white" size={20} />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800 tracking-tight">{children}</h2>
+            </div>
+        );
+
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const NavTab = ({ active, label, onClick, icon: Icon }) => (
+            <button 
+                onClick={onClick}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300
+                    ${active 
+                        ? 'bg-blue-600 text-white shadow-md scale-105' 
+                        : 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+            >
+                <Icon size={16} />
+                {label}
+            </button>
+        );
+
+        // --- Main App ---
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [scrolled, setScrolled] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'overview':
+                        return (
+                            <div className="space-y-8 fade-in-up">
+                                {/* Hero Stats */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {[
+                                        { label: "Students", val: "15k+" },
+                                        { label: "Faculty", val: "1,094" },
+                                        { label: "Majors", val: "44" },
+                                        { label: "Masters", val: "3" }
+                                    ].map((stat, i) => (
+                                        <Card key={i} className="p-4 text-center border-none bg-gradient-to-br from-white to-slate-50">
+                                            <div className="text-3xl font-bold text-blue-600 mb-1">{stat.val}</div>
+                                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
+                                        </Card>
+                                    ))}
+                                </div>
+
+                                <Card className="p-8 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-10 -mt-10 opacity-50"></div>
+                                    <SectionTitle icon={Icons.Book}>University Profile</SectionTitle>
+                                    <p className="text-slate-600 leading-relaxed text-lg relative z-10">{universityProfile}</p>
+                                </Card>
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <Card className="p-6 bg-gradient-to-br from-blue-50 to-white border-blue-100">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Icons.Thermometer className="text-blue-500" />
+                                            <h3 className="font-bold text-slate-800">Weather Forecast</h3>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                                                <span className="font-semibold text-slate-700">Nov 25</span>
+                                                <span className="text-slate-500 text-sm bg-slate-100 px-2 py-1 rounded">Cloudy 4-16°C</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                                                <span className="font-semibold text-slate-700">Nov 26</span>
+                                                <span className="text-slate-500 text-sm bg-slate-100 px-2 py-1 rounded">Overcast 5-17°C</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                                                <span className="font-semibold text-slate-700">Nov 27</span>
+                                                <span className="text-slate-500 text-sm bg-slate-100 px-2 py-1 rounded">Overcast 3-17°C</span>
+                                            </div>
+                                        </div>
+                                    </Card>
+
+                                    <Card className="p-6 bg-gradient-to-br from-amber-50 to-white border-amber-100">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Icons.Briefcase className="text-amber-500" />
+                                            <h3 className="font-bold text-slate-800">Attire Guide</h3>
+                                        </div>
+                                        <div className="p-4 bg-white/60 rounded-xl text-sm text-amber-900 leading-relaxed border border-amber-100/50">
+                                            <p className="mb-2">⚠️ <strong>High Temperature Variation</strong></p>
+                                            <p className="mb-1">☀️ <strong>Day:</strong> Layers + Windbreaker</p>
+                                            <p>🌙 <strong>Night:</strong> Thick Sweater + Heavy Jacket</p>
+                                        </div>
+                                    </Card>
+                                </div>
+                            </div>
+                        );
+                    
+                    case 'schedule':
+                        return (
+                            <div className="space-y-10 fade-in-up">
+                                {scheduleData.map((day, idx) => (
+                                    <div key={idx} className="relative">
+                                        {/* Sticky Date Header */}
+                                        <div className="sticky top-24 z-10 mb-6">
+                                            <div className="inline-flex items-center gap-3 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg">
+                                                <Icons.Calendar size={16} />
+                                                <span className="font-bold">{day.date}</span>
+                                                <span className="w-px h-4 bg-slate-600"></span>
+                                                <span className="text-slate-300 text-sm font-normal">{day.location}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Timeline */}
+                                        <div className="ml-4 md:ml-8 border-l-2 border-slate-200 pl-6 md:pl-8 space-y-6 pb-8">
+                                            {day.events.map((event, eIdx) => (
+                                                <div key={eIdx} className="relative group">
+                                                    {/* Dot */}
+                                                    <div className="absolute -left-[31px] md:-left-[39px] top-6 w-4 h-4 bg-white border-[3px] border-slate-300 rounded-full group-hover:border-blue-500 group-hover:scale-110 transition-all duration-300"></div>
+                                                    
+                                                    <Card className="p-5 hover:border-blue-200 group-hover:shadow-md">
+                                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                                            <div className="flex items-center text-blue-600 font-mono text-sm font-bold">
+                                                                <Icons.Clock size={14} className="mr-1.5" />
+                                                                {event.time}
+                                                            </div>
+                                                            <div className="self-start sm:self-auto"><Badge type={event.type} /></div>
+                                                        </div>
+                                                        <h4 className="text-lg font-bold text-slate-800 mb-1">{event.title}</h4>
+                                                        {event.desc && <p className="text-slate-500 text-sm leading-relaxed">{event.desc}</p>}
+                                                    </Card>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        );
+
+                    case 'presentations':
+                        return (
+                            <div className="fade-in-up space-y-6">
+                                <SectionTitle icon={Icons.Briefcase}>Academic Presentations</SectionTitle>
+                                <div className="grid gap-4">
+                                    {presentations.map((item, idx) => (
+                                        <Card key={idx} className="p-0 overflow-hidden group border-l-4 border-l-blue-500">
+                                            <div className="flex flex-col md:flex-row">
+                                                {/* Time Column */}
+                                                <div className="bg-slate-50 p-5 flex flex-row md:flex-col items-center justify-center md:w-32 border-b md:border-b-0 md:border-r border-slate-100 gap-2">
+                                                    <span className="text-2xl font-bold text-slate-700 font-mono">{item.time}</span>
+                                                    <span className="text-xs text-slate-400 font-medium uppercase">to {item.end}</span>
+                                                </div>
+                                                {/* Content */}
+                                                <div className="p-5 flex-1">
+                                                    <h4 className="text-lg font-bold text-slate-800 mb-3 group-hover:text-blue-700 transition-colors">
+                                                        {item.topic}
+                                                    </h4>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
+                                                            {item.speaker.charAt(0)}
+                                                        </div>
+                                                        <span className="font-medium text-slate-600 text-sm">{item.speaker}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+
+                    case 'logistics':
+                        return (
+                            <div className="fade-in-up grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <SectionTitle icon={Icons.MapPin}>Accommodation</SectionTitle>
+                                    <Card className="p-6 border-t-4 border-t-violet-500">
+                                        <h3 className="text-xl font-bold text-slate-800 mb-1">GZEU Comprehensive Building</h3>
+                                        <p className="text-slate-500 text-sm mb-6">No. 115 Gaoxin Road, Wudang District</p>
+                                        
+                                        <div className="space-y-4">
+                                            <div className="flex items-start gap-3">
+                                                <div className="bg-violet-50 p-2 rounded text-violet-600"><Icons.Clock size={18}/></div>
+                                                <div>
+                                                    <div className="text-xs font-bold text-slate-400 uppercase">Check-in</div>
+                                                    <div className="text-slate-700 font-medium">Nov 25, 17:00 - 18:00</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <div className="bg-violet-50 p-2 rounded text-violet-600"><Icons.Coffee size={18}/></div>
+                                                <div>
+                                                    <div className="text-xs font-bold text-slate-400 uppercase">Breakfast</div>
+                                                    <div className="text-slate-700 font-medium">07:00 - 09:30 (2nd Floor)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </div>
+
+                                <div>
+                                    <SectionTitle icon={Icons.Coffee}>Dining Plan</SectionTitle>
+                                    <div className="space-y-4">
+                                        {[
+                                            { date: "Nov 25", meal: "Dinner", loc: "Comprehensive Building (2F)" },
+                                            { date: "Nov 26", meal: "Dinner", loc: "Lao Kai Li Sour Soup Fish", highlight: true },
+                                            { date: "Nov 27", meal: "Dinner", loc: "Comprehensive Building (2F)" }
+                                        ].map((item, i) => (
+                                            <Card key={i} className={`p-4 flex items-center justify-between ${item.highlight ? 'bg-amber-50 border-amber-200' : ''}`}>
+                                                <div>
+                                                    <div className="text-xs font-bold text-slate-400 uppercase mb-1">{item.date} • {item.meal}</div>
+                                                    <div className={`font-medium ${item.highlight ? 'text-amber-900 font-bold' : 'text-slate-700'}`}>{item.loc}</div>
+                                                </div>
+                                                {item.highlight && <span className="text-xl">🍲</span>}
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+
+                    case 'people':
+                        return (
+                            <div className="fade-in-up space-y-10">
+                                <div>
+                                    <SectionTitle icon={Icons.Users}>Distinguished Guests</SectionTitle>
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {guests.map((g, i) => (
+                                            <Card key={i} className="p-4 flex items-center gap-4">
+                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md
+                                                    ${g.gender === 'Female' ? 'bg-rose-400' : 'bg-sky-500'}`}>
+                                                    {g.name.split(' ').pop().charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-slate-800 text-sm leading-tight mb-1">{g.name}</div>
+                                                    <div className="text-xs text-slate-400 font-medium">Kasetsart University</div>
+                                                </div>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <SectionTitle icon={Icons.User}>Working Staff</SectionTitle>
+                                    <Card className="overflow-hidden border-0 shadow-lg">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm">
+                                                <thead className="bg-slate-50 border-b border-slate-100 text-xs text-slate-500 uppercase">
+                                                    <tr>
+                                                        <th className="px-6 py-4 text-left">Name</th>
+                                                        <th className="px-6 py-4 text-left">Role & Title</th>
+                                                        <th className="px-6 py-4 text-right">Contact</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-50">
+                                                    {staffList.map((s, i) => (
+                                                        <tr key={i} className="hover:bg-blue-50/30 transition-colors group">
+                                                            <td className="px-6 py-4 font-semibold text-slate-700">{s.name}</td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="inline-block px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-bold mb-1">{s.role}</div>
+                                                                <div className="text-slate-500 text-xs">{s.title}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-right font-mono text-slate-600 group-hover:text-blue-600">{s.contact}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </Card>
+                                </div>
+                            </div>
+                        );
+                }
+            };
+
+            return (
+                <div className="min-h-screen pb-20">
+                    {/* Modern Gradient Header */}
+                    <header className="bg-slate-900 text-white relative overflow-hidden shadow-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-slate-900 to-slate-900 opacity-90"></div>
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                        <div className="relative max-w-5xl mx-auto px-6 py-12 md:py-20 text-center">
+                            <div className="inline-block mb-4 px-3 py-1 rounded-full border border-blue-400/30 bg-blue-500/10 backdrop-blur-sm text-blue-300 text-xs font-bold tracking-widest uppercase">
+                                Conference Handbook
+                            </div>
+                            <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">
+                                2025 Annual Academic Conference
+                            </h1>
+                            <p className="text-slate-400 max-w-2xl mx-auto mb-8 text-sm md:text-base">
+                                China-Thailand Joint Laboratory on Watershed Ecological Management <br className="hidden md:block"/>and Sustainable Development
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-4 text-sm">
+                                <div className="flex items-center px-4 py-2 rounded-lg bg-white/10 backdrop-blur border border-white/10">
+                                    <Icons.Calendar className="mr-2 text-blue-400" size={16}/> Nov 25 – 28, 2025
+                                </div>
+                                <div className="flex items-center px-4 py-2 rounded-lg bg-white/10 backdrop-blur border border-white/10">
+                                    <Icons.MapPin className="mr-2 text-amber-400" size={16}/> Guizhou Education University
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Sticky Glass Navigation */}
+                    <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'glass-nav shadow-md pt-2 pb-2' : 'bg-slate-900 pt-4 pb-4'}`}>
+                        <div className="max-w-5xl mx-auto px-4 overflow-x-auto scrollbar-hide">
+                            <div className="flex md:justify-center gap-2 min-w-max">
+                                <NavTab active={activeTab === 'overview'} label="Overview" icon={Icons.Book} onClick={() => setActiveTab('overview')} />
+                                <NavTab active={activeTab === 'schedule'} label="Schedule" icon={Icons.Calendar} onClick={() => setActiveTab('schedule')} />
+                                <NavTab active={activeTab === 'presentations'} label="Reports" icon={Icons.Briefcase} onClick={() => setActiveTab('presentations')} />
+                                <NavTab active={activeTab === 'logistics'} label="Logistics" icon={Icons.Coffee} onClick={() => setActiveTab('logistics')} />
+                                <NavTab active={activeTab === 'people'} label="People" icon={Icons.Users} onClick={() => setActiveTab('people')} />
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Main Content */}
+                    <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
+                        {renderContent()}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="text-center text-slate-400 text-sm py-8 border-t border-slate-200 mt-8">
+                        <p className="font-medium text-slate-500">Guizhou Education University (GZEU)</p>
+                        <p className="mt-2 opacity-60">Designed for the 2025 Annual Academic Conference</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
